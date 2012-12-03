@@ -11,33 +11,31 @@ if(UNIX AND NOT APPLE)
         INCLUDE_DIRS include
         DEPENDS rt pthread
     )
-else ()
+else()
     # Otherwise normal call
     catkin_package(
         LIBRARIES ${PROJECT_NAME}
         INCLUDE_DIRS include
     )
-endif ()
+endif()
 
 ## Sources
 set(serial_SRCS
     src/serial.cc
-    # include/serial/serial.h
-    # include/serial/v8stdint.h
+    include/serial/serial.h
+    include/serial/v8stdint.h
 )
-if (UNIX)
+if(UNIX)
     # If unix
-    list (APPEND serial_SRCS src/impl/unix.cc)
+    list(APPEND serial_SRCS src/impl/unix.cc)
 else()
     # If windows
-    list (APPEND serial_SRCS src/impl/win.cc)
+    list(APPEND serial_SRCS src/impl/win.cc)
 endif()
 
 ## Add serial library
-add_library(${PROJECT_NAME}
-    ${serial_SRCS}
-)
-if (UNIX)
+add_library(${PROJECT_NAME} ${serial_SRCS})
+if(UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} rt)
 endif()
 
