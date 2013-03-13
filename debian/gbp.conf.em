@@ -1,3 +1,3 @@
 [git-buildpackage]
-upstream-branch=release/serial/1.1.3
+upstream-branch=@(release_tag)
 upstream-tree=branch
