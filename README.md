@@ -1,6 +1,7 @@
 # Mon, 17 Jun 2013 20:58:53 -0000
 
 User `william@dosa` ran `/usr/local/bin/bloom-release serial groovy` on `Mon, 17 Jun 2013 20:58:53 -0000`
+
 The `serial` package was released.
 
 Version of package(s) in repository `serial`:
