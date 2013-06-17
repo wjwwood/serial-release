@@ -14,7 +14,7 @@ Versions of tools used:
 - rosdistro version: `0.2.1`
 - rosdep version: `0.10.16`
 - catkin_pkg version: `0.1.13`
-- vcstools version: `0.1.30
+- vcstools version: `0.1.30`
 
 
 # Mon, 17 Jun 2013 21:13:57 -0000
