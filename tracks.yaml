@@ -51,7 +51,7 @@ tracks:
     last_version: 1.1.3
     name: serial
     patches: null
-    release_inc: '41'
+    release_inc: '42'
     release_repo_url: git@github.com:wjwwood/serial-release.git
     release_tag: :{version}
     ros_distro: hydro
