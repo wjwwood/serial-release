@@ -1,5 +1,5 @@
 /* Copyright 2012 William Woodall and John Harrison */
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__OpenBSD__)
 # include <alloca.h>
 #endif
 
@@ -19,7 +19,7 @@ using std::size_t;
 using std::string;
 
 using serial::Serial;
-using serial::SerialExecption;
+using serial::SerialException;
 using serial::IOException;
 using serial::bytesize_t;
 using serial::parity_t;
