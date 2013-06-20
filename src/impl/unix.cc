@@ -40,7 +40,7 @@ using std::string;
 using std::stringstream;
 using std::invalid_argument;
 using serial::Serial;
-using serial::SerialExecption;
+using serial::SerialException;
 using serial::PortNotOpenedException;
 using serial::IOException;
 
@@ -73,7 +73,7 @@ Serial::SerialImpl::open ()
     throw invalid_argument ("Empty port is invalid.");
   }
   if (is_open_ == true) {
-    throw SerialExecption ("Serial port already open.");
+    throw SerialException ("Serial port already open.");
   }
 
   fd_ = ::open (port_.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
@@ -389,7 +389,8 @@ Serial::SerialImpl::available ()
   }
 }
 
-inline void get_time_now(struct timespec &time)
+inline void
+get_time_now (struct timespec &time)
 {
 # ifdef __MACH__ // OS X does not have clock_gettime, use clock_get_time
   clock_serv_t cclock;
@@ -402,6 +403,19 @@ inline void get_time_now(struct timespec &time)
 # else
   clock_gettime(CLOCK_REALTIME, &time);
 # endif
+}
+
+inline void
+diff_timespec (timespec &start, timespec &end, timespec &result) {
+  if (start.tv_sec > end.tv_sec) {
+    throw SerialException ("Timetravel, start time later than end time.");
+  }
+  result.tv_sec = end.tv_sec - start.tv_sec;
+  result.tv_nsec = end.tv_nsec - start.tv_nsec;
+  if (result.tv_nsec < 0) {
+    result.tv_nsec = 1e9 - result.tv_nsec;
+    result.tv_sec -= 1;
+  }
 }
 
 size_t
@@ -452,19 +466,18 @@ Serial::SerialImpl::read (uint8_t *buf, size_t size)
     // Calculate difference and update the structure
     get_time_now (end);
     // Calculate the time select took
-    struct timeval diff;
-    diff.tv_sec = end.tv_sec - start.tv_sec;
-    diff.tv_usec = static_cast<int> ((end.tv_nsec - start.tv_nsec) / 1000);
+    struct timespec diff;
+    diff_timespec (start, end, diff);
     // Update the timeout
     if (total_timeout.tv_sec <= diff.tv_sec) {
       total_timeout.tv_sec = 0;
     } else {
       total_timeout.tv_sec -= diff.tv_sec;
     }
-    if (total_timeout.tv_usec <= diff.tv_usec) {
+    if (total_timeout.tv_usec <= (diff.tv_nsec / 1000)) {
       total_timeout.tv_usec = 0;
     } else {
-      total_timeout.tv_usec -= diff.tv_usec;
+      total_timeout.tv_usec -= (diff.tv_nsec / 1000);
     }
 
     // Figure out what happened by looking at select's response 'r'
@@ -495,7 +508,7 @@ Serial::SerialImpl::read (uint8_t *buf, size_t size)
           // Disconnected devices, at least on Linux, show the
           // behavior that they are always ready to read immediately
           // but reading returns nothing.
-          throw SerialExecption ("device reports readiness to read but "
+          throw SerialException ("device reports readiness to read but "
                                  "returned no data (device disconnected?)");
         }
         // Update bytes_read
@@ -510,7 +523,7 @@ Serial::SerialImpl::read (uint8_t *buf, size_t size)
         }
         // If bytes_read > size then we have over read, which shouldn't happen
         if (bytes_read > size) {
-          throw SerialExecption ("read over read, too many bytes where "
+          throw SerialException ("read over read, too many bytes where "
                                  "read, this shouldn't happen, might be "
                                  "a logical error!");
         }
@@ -552,19 +565,18 @@ Serial::SerialImpl::write (const uint8_t *data, size_t length)
     // Calculate difference and update the structure
     get_time_now(end);
     // Calculate the time select took
-    struct timeval diff;
-    diff.tv_sec = end.tv_sec - start.tv_sec;
-    diff.tv_usec = static_cast<int> ((end.tv_nsec - start.tv_nsec) / 1000);
+    struct timespec diff;
+    diff_timespec(start, end, diff);
     // Update the timeout
     if (timeout.tv_sec <= diff.tv_sec) {
       timeout.tv_sec = 0;
     } else {
       timeout.tv_sec -= diff.tv_sec;
     }
-    if (timeout.tv_usec <= diff.tv_usec) {
+    if (timeout.tv_usec <= (diff.tv_nsec / 1000)) {
       timeout.tv_usec = 0;
     } else {
-      timeout.tv_usec -= diff.tv_usec;
+      timeout.tv_usec -= (diff.tv_nsec / 1000);
     }
 #endif
 
@@ -595,7 +607,7 @@ Serial::SerialImpl::write (const uint8_t *data, size_t length)
           // Disconnected devices, at least on Linux, show the
           // behavior that they are always ready to write immediately
           // but writing returns nothing.
-          throw SerialExecption ("device reports readiness to write but "
+          throw SerialException ("device reports readiness to write but "
                                  "returned no data (device disconnected?)");
         }
         // Update bytes_written
@@ -610,7 +622,7 @@ Serial::SerialImpl::write (const uint8_t *data, size_t length)
         }
         // If bytes_written > size then we have over written, which shouldn't happen
         if (bytes_written > length) {
-          throw SerialExecption ("write over wrote, too many bytes where "
+          throw SerialException ("write over wrote, too many bytes where "
                                  "written, this shouldn't happen, might be "
                                  "a logical error!");
         }
@@ -810,7 +822,7 @@ Serial::SerialImpl::waitForChange ()
     stringstream ss;
     ss << "waitForDSR failed on a call to ioctl(TIOCMIWAIT): "
        << errno << " " << strerror(errno);
-    throw(SerialExecption(ss.str().c_str()));
+    throw(SerialException(ss.str().c_str()));
   }
   return true;
 #endif
