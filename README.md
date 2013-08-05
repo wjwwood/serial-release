@@ -1,3 +1,22 @@
+## serial - 1.1.4-6
+
+User `osrf@r2d2` released the packages in the `serial` repository by running `/usr/bin/bloom-release -r hydro -t hydro serial --edit` on `Mon, 05 Aug 2013 19:48:03 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+- rosdistro version: `1.1.4-0`
+- old version: `1.1.4-5`
+- new version: `1.1.4-6`
+
+Versions of tools used:
+- bloom version: `0.4.4`
+- catkin_pkg version: `0.1.19`
+- rosdep version: `0.10.21`
+- rosdistro version: `0.2.13`
+- vcstools version: `0.1.31`
+
+
 ## serial - 1.1.4-5
 
 User `william@dosa` released the packages in the `serial` repository by running `/usr/local/bin/bloom-release serial -t hydro -r hydro` on `Thu, 27 Jun 2013 18:32:57 -0000`
