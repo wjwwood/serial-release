@@ -52,7 +52,7 @@ tracks:
     name: serial
     patches: null
     release_inc: '5'
-    release_repo_url: git@github.com:wjwwood/serial-release.git
+    release_repo_url: null
     release_tag: :{version}
     ros_distro: hydro
     vcs_type: git
