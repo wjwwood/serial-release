@@ -1,3 +1,22 @@
+## serial (indigo) - 1.1.7-0
+
+User `william@dosa` released the packages in the `serial` repository into the `indigo` distro by running `/usr/local/bin/bloom-release -r indigo -t indigo -n serial` on `Fri, 21 Feb 2014 01:44:04 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.1.7-0`
+
+Versions of tools used:
+- bloom version: `0.4.9`
+- catkin_pkg version: `0.1.26`
+- rosdep version: `0.10.25`
+- rosdistro version: `0.3.3`
+- vcstools version: `0.1.33`
+
+
 ## serial (hydro) - 1.1.7-0
 
 User `william@dosa` released the packages in the `serial` repository into the `hydro` distro by running `/usr/local/bin/bloom-release -r hydro -t hydro serial` on `Fri, 21 Feb 2014 01:40:27 -0000`
