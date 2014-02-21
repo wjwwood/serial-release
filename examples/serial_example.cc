@@ -55,7 +55,11 @@ int run(int argc, char **argv)
 
   // Argument 2 is the baudrate
   unsigned long baud = 0;
+#if defined(WIN32) && !defined(__MINGW32__)
+  sscanf_s(argv[2], "%lu", &baud);
+#else
   sscanf(argv[2], "%lu", &baud);
+#endif
 
   // port, baudrate, timeout in milliseconds
   serial::Serial my_serial(port, baud, serial::Timeout::simpleTimeout(1000));
