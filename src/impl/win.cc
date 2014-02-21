@@ -1,8 +1,11 @@
+#if defined(_WIN32)
+
 /* Copyright 2012 William Woodall and John Harrison */
 
 #include "serial/impl/win.h"
 
 using std::string;
+using std::wstring;
 using std::stringstream;
 using std::invalid_argument;
 using serial::Serial;
@@ -20,7 +23,7 @@ Serial::SerialImpl::SerialImpl (const string &port, unsigned long baudrate,
                                 bytesize_t bytesize,
                                 parity_t parity, stopbits_t stopbits,
                                 flowcontrol_t flowcontrol)
-  : port_ (port), fd_ (INVALID_HANDLE_VALUE), is_open_ (false),
+  : port_ (port.begin(), port.end()), fd_ (INVALID_HANDLE_VALUE), is_open_ (false),
     baudrate_ (baudrate), parity_ (parity),
     bytesize_ (bytesize), stopbits_ (stopbits), flowcontrol_ (flowcontrol)
 {
@@ -47,20 +50,22 @@ Serial::SerialImpl::open ()
     throw SerialException ("Serial port already open.");
   }
 
-  fd_ = CreateFile(port_.c_str(),
-                   GENERIC_READ | GENERIC_WRITE,
-                   0,
-                   0,
-                   OPEN_EXISTING,
-                   FILE_ATTRIBUTE_NORMAL,
-                   0);
+  LPCWSTR lp_port = port_.c_str();
+  fd_ = CreateFileW(lp_port,
+                    GENERIC_READ | GENERIC_WRITE,
+                    0,
+                    0,
+                    OPEN_EXISTING,
+                    FILE_ATTRIBUTE_NORMAL,
+                    0);
 
   if (fd_ == INVALID_HANDLE_VALUE) {
     DWORD errno_ = GetLastError();
 	stringstream ss;
     switch (errno_) {
     case ERROR_FILE_NOT_FOUND:
-      ss << "Specified port, " << port_ << ", does not exist.";
+      // Use this->getPort to convert to a std::string
+      ss << "Specified port, " << this->getPort() << ", does not exist.";
       THROW (IOException, ss.str().c_str());
     default:
       ss << "Unknown error opening the serial port: " << errno;
@@ -234,8 +239,19 @@ Serial::SerialImpl::reconfigurePort ()
   }
 
   // activate settings
-  if(!SetCommState(fd_, &dcbSerialParams)){
+  if (!SetCommState(fd_, &dcbSerialParams)){
     THROW (IOException, "Error setting serial port settings.");
+  }
+
+  // Setup timeouts
+  COMMTIMEOUTS timeouts = {0};
+  timeouts.ReadIntervalTimeout = timeout_.inter_byte_timeout;
+  timeouts.ReadTotalTimeoutConstant = timeout_.read_timeout_constant;
+  timeouts.ReadTotalTimeoutMultiplier = timeout_.read_timeout_multiplier;
+  timeouts.WriteTotalTimeoutConstant = timeout_.write_timeout_constant;
+  timeouts.WriteTotalTimeoutMultiplier = timeout_.write_timeout_multiplier;
+  if (!SetCommTimeouts(fd_, &timeouts)) {
+    THROW (IOException, "Error setting timeouts.");
   }
 }
 
@@ -260,7 +276,16 @@ Serial::SerialImpl::isOpen () const
 size_t
 Serial::SerialImpl::available ()
 {
-  THROW (IOException, "available is not implemented on Windows.");
+  if (!is_open_) {
+    return 0;
+  }
+  COMSTAT cs;
+  if (!ClearCommError(fd_, NULL, &cs)) {
+    stringstream ss;
+    ss << "Error while checking status of the serial port: " << GetLastError();
+    THROW (IOException, ss.str().c_str());
+  }
+  return static_cast<size_t>(cs.cbInQue);
 }
 
 size_t
@@ -296,27 +321,21 @@ Serial::SerialImpl::write (const uint8_t *data, size_t length)
 void
 Serial::SerialImpl::setPort (const string &port)
 {
-  port_ = port;
+  port_ = wstring(port.begin(), port.end());
 }
 
 string
 Serial::SerialImpl::getPort () const
 {
-  return port_;
+  return string(port_.begin(), port_.end());
 }
 
 void
 Serial::SerialImpl::setTimeout (serial::Timeout &timeout)
 {
   timeout_ = timeout;
-  COMMTIMEOUTS timeouts = {0};
-  timeouts.ReadIntervalTimeout = timeout_.inter_byte_timeout;
-  timeouts.ReadTotalTimeoutConstant = timeout_.read_timeout_constant;
-  timeouts.ReadTotalTimeoutMultiplier = timeout_.read_timeout_multiplier;
-  timeouts.WriteTotalTimeoutConstant = timeout_.write_timeout_constant;
-  timeouts.WriteTotalTimeoutMultiplier = timeout_.write_timeout_multiplier;
-  if(!SetCommTimeouts(fd_, &timeouts)){
-    THROW (IOException, "Error setting timeouts.");
+  if (is_open_) {
+    reconfigurePort ();
   }
 }
 
@@ -330,8 +349,9 @@ void
 Serial::SerialImpl::setBaudrate (unsigned long baudrate)
 {
   baudrate_ = baudrate;
-  if (is_open_)
+  if (is_open_) {
     reconfigurePort ();
+  }
 }
 
 unsigned long
@@ -344,8 +364,9 @@ void
 Serial::SerialImpl::setBytesize (serial::bytesize_t bytesize)
 {
   bytesize_ = bytesize;
-  if (is_open_)
+  if (is_open_) {
     reconfigurePort ();
+  }
 }
 
 serial::bytesize_t
@@ -358,8 +379,9 @@ void
 Serial::SerialImpl::setParity (serial::parity_t parity)
 {
   parity_ = parity;
-  if (is_open_)
+  if (is_open_) {
     reconfigurePort ();
+  }
 }
 
 serial::parity_t
@@ -372,8 +394,9 @@ void
 Serial::SerialImpl::setStopbits (serial::stopbits_t stopbits)
 {
   stopbits_ = stopbits;
-  if (is_open_)
+  if (is_open_) {
     reconfigurePort ();
+  }
 }
 
 serial::stopbits_t
@@ -386,8 +409,9 @@ void
 Serial::SerialImpl::setFlowcontrol (serial::flowcontrol_t flowcontrol)
 {
   flowcontrol_ = flowcontrol;
-  if (is_open_)
+  if (is_open_) {
     reconfigurePort ();
+  }
 }
 
 serial::flowcontrol_t
@@ -491,11 +515,11 @@ Serial::SerialImpl::getCTS ()
     throw PortNotOpenedException ("Serial::getCTS");
   }
   DWORD dwModemStatus;
-  if (!GetCommModemStatus(fd_, &dwModemStatus))
-    // Error in GetCommModemStatus;
+  if (!GetCommModemStatus(fd_, &dwModemStatus)) {
     THROW (IOException, "Error getting the status of the CTS line.");
+  }
 
-  return (bool) (MS_CTS_ON & dwModemStatus);
+  return (MS_CTS_ON & dwModemStatus) != 0;
 }
 
 bool
@@ -505,11 +529,11 @@ Serial::SerialImpl::getDSR ()
     throw PortNotOpenedException ("Serial::getDSR");
   }
   DWORD dwModemStatus;
-  if (!GetCommModemStatus(fd_, &dwModemStatus))
-    // Error in GetCommModemStatus;
+  if (!GetCommModemStatus(fd_, &dwModemStatus)) {
     THROW (IOException, "Error getting the status of the DSR line.");
+  }
 
-  return (bool) (MS_DSR_ON & dwModemStatus);
+  return (MS_DSR_ON & dwModemStatus) != 0;
 }
 
 bool
@@ -519,11 +543,11 @@ Serial::SerialImpl::getRI()
     throw PortNotOpenedException ("Serial::getRI");
   }
   DWORD dwModemStatus;
-  if (!GetCommModemStatus(fd_, &dwModemStatus))
-    // Error in GetCommModemStatus;
-    THROW (IOException, "Error getting the status of the DSR line.");
+  if (!GetCommModemStatus(fd_, &dwModemStatus)) {
+    THROW (IOException, "Error getting the status of the RI line.");
+  }
 
-  return (bool) (MS_RING_ON & dwModemStatus);
+  return (MS_RING_ON & dwModemStatus) != 0;
 }
 
 bool
@@ -533,11 +557,12 @@ Serial::SerialImpl::getCD()
     throw PortNotOpenedException ("Serial::getCD");
   }
   DWORD dwModemStatus;
-  if (!GetCommModemStatus(fd_, &dwModemStatus))
+  if (!GetCommModemStatus(fd_, &dwModemStatus)) {
     // Error in GetCommModemStatus;
-    THROW (IOException, "Error getting the status of the DSR line.");
+    THROW (IOException, "Error getting the status of the CD line.");
+  }
 
-  return (bool) (MS_RLSD_ON & dwModemStatus);
+  return (MS_RLSD_ON & dwModemStatus) != 0;
 }
 
 void
@@ -571,3 +596,6 @@ Serial::SerialImpl::writeUnlock()
     THROW (IOException, "Error releasing write mutex.");
   }
 }
+
+#endif // #if defined(_WIN32)
+
