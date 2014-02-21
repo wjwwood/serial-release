@@ -35,6 +35,8 @@
  *
  */
 
+#if !defined(_WIN32)
+
 #ifndef SERIAL_IMPL_UNIX_H
 #define SERIAL_IMPL_UNIX_H
 
@@ -44,11 +46,22 @@
 
 namespace serial {
 
+using std::size_t;
 using std::string;
 using std::invalid_argument;
 
 using serial::SerialException;
 using serial::IOException;
+
+class MillisecondTimer {
+public:
+  MillisecondTimer(const uint32_t millis);         
+  int64_t remaining();
+
+private:
+  static timespec timespec_now();
+  timespec expiry;
+};
 
 class serial::Serial::SerialImpl {
 public:
@@ -197,3 +210,5 @@ private:
 }
 
 #endif // SERIAL_IMPL_UNIX_H
+
+#endif // !defined(_WIN32)
