@@ -1,3 +1,22 @@
+## serial (hydro) - 1.1.7-0
+
+User `william@dosa` released the packages in the `serial` repository into the `hydro` distro by running `/usr/local/bin/bloom-release -r hydro -t hydro serial` on `Fri, 21 Feb 2014 01:40:27 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+- rosdistro version: `1.1.5-0`
+- old version: `1.1.6-0`
+- new version: `1.1.7-0`
+
+Versions of tools used:
+- bloom version: `0.4.9`
+- catkin_pkg version: `0.1.26`
+- rosdep version: `0.10.25`
+- rosdistro version: `0.3.3`
+- vcstools version: `0.1.33`
+
+
 ## serial (groovy) - 1.1.7-0
 
 User `william@dosa` released the packages in the `serial` repository into the `groovy` distro by running `/usr/local/bin/bloom-release -r groovy -t groovy serial` on `Fri, 21 Feb 2014 01:38:11 -0000`
