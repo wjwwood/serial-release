@@ -1,3 +1,5 @@
+#if defined(_WIN32)
+
 /* Copyright 2012 William Woodall and John Harrison */
 
 #include "serial/impl/win.h"
@@ -237,7 +239,7 @@ Serial::SerialImpl::reconfigurePort ()
   }
 
   // activate settings
-  if(!SetCommState(fd_, &dcbSerialParams)){
+  if (!SetCommState(fd_, &dcbSerialParams)){
     THROW (IOException, "Error setting serial port settings.");
   }
 
@@ -278,7 +280,7 @@ Serial::SerialImpl::available ()
     return 0;
   }
   COMSTAT cs;
-  if(!ClearCommError(fd_, NULL, &cs)) {
+  if (!ClearCommError(fd_, NULL, &cs)) {
     stringstream ss;
     ss << "Error while checking status of the serial port: " << GetLastError();
     THROW (IOException, ss.str().c_str());
@@ -594,3 +596,6 @@ Serial::SerialImpl::writeUnlock()
     THROW (IOException, "Error releasing write mutex.");
   }
 }
+
+#endif // #if defined(_WIN32)
+
