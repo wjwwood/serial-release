@@ -1,3 +1,24 @@
+## serial (jade) - 1.2.1-0
+
+The packages in the `serial` repository were released into the `jade` distro by running `/usr/local/bin/bloom-release -r jade -t jade serial` on `Wed, 22 Apr 2015 04:54:14 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+- upstream repository: https://github.com/wjwwood/serial.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.2.1-0`
+
+Versions of tools used:
+- bloom version: `0.5.19`
+- catkin_pkg version: `0.2.8`
+- rosdep version: `0.11.2`
+- rosdistro version: `0.4.2`
+- vcstools version: `0.1.36`
+
+
 ## serial (indigo) - 1.2.0-2
 
 The packages in the `serial` repository were released into the `indigo` distro by running `/usr/local/bin/bloom-release -r indigo -t indigo serial` on `Wed, 24 Sep 2014 06:00:11 -0000`
