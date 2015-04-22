@@ -27,6 +27,7 @@
 #include <sys/time.h>
 #include <time.h>
 #ifdef __MACH__
+#include <AvailabilityMacros.h>
 #include <mach/clock.h>
 #include <mach/mach.h>
 #endif
@@ -268,6 +269,9 @@ Serial::SerialImpl::reconfigurePort ()
 #ifdef B460800
   case 460800: baud = B460800; break;
 #endif
+#ifdef B576000
+  case 576000: baud = B576000; break;
+#endif
 #ifdef B921600
   case 921600: baud = B921600; break;
 #endif
@@ -368,7 +372,22 @@ Serial::SerialImpl::reconfigurePort ()
     options.c_cflag |=  (PARENB);
   } else if (parity_ == parity_odd) {
     options.c_cflag |=  (PARENB | PARODD);
-  } else {
+  }
+#ifdef CMSPAR
+  else if (parity_ == parity_mark) {
+    options.c_cflag |=  (PARENB | CMSPAR | PARODD);
+  }
+  else if (parity_ == parity_space) {
+    options.c_cflag |=  (PARENB | CMSPAR);
+    options.c_cflag &= (tcflag_t) ~(PARODD);
+  }
+#else
+  // CMSPAR is not defined on OSX. So do not support mark or space parity.
+  else if (parity_ == parity_mark || parity_ == parity_space) {
+    throw invalid_argument ("OS does not support mark or space parity");
+  }
+#endif  // ifdef CMSPAR
+  else {
     throw invalid_argument ("invalid parity");
   }
   // setup flow control
@@ -503,7 +522,7 @@ Serial::SerialImpl::waitReadable (uint32_t timeout)
 void
 Serial::SerialImpl::waitByteTimes (size_t count)
 {
-  timespec wait_time = { 0, byte_time_ns_ * count };
+  timespec wait_time = { 0, static_cast<long>(byte_time_ns_ * count)};
   pselect (0, NULL, NULL, NULL, &wait_time, NULL);
 }
 
