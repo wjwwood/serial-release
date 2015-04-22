@@ -1,3 +1,24 @@
+## serial (hydro) - 1.2.1-0
+
+The packages in the `serial` repository were released into the `hydro` distro by running `/usr/local/bin/bloom-release -r hydro -t hydro serial` on `Wed, 22 Apr 2015 05:22:07 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+- upstream repository: https://github.com/wjwwood/serial.git
+- release repository: https://github.com/wjwwood/serial-release.git
+- rosdistro version: `1.1.7-0`
+- old version: `1.1.7-0`
+- new version: `1.2.1-0`
+
+Versions of tools used:
+- bloom version: `0.5.19`
+- catkin_pkg version: `0.2.8`
+- rosdep version: `0.11.2`
+- rosdistro version: `0.4.2`
+- vcstools version: `0.1.36`
+
+
 ## serial (indigo) - 1.2.1-0
 
 The packages in the `serial` repository were released into the `indigo` distro by running `/usr/local/bin/bloom-release -r indigo -t indigo serial` on `Wed, 22 Apr 2015 05:00:57 -0000`
