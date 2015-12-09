@@ -1,3 +1,26 @@
+## serial (jade) - 1.2.1-1
+
+The packages in the `serial` repository were released into the `jade` distro by running `/Users/william/dev/bloom/venv/bin/bloom-release -r jade -t jade serial` on `Wed, 09 Dec 2015 20:29:54 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+
+- upstream repository: https://github.com/wjwwood/serial.git
+- release repository: https://github.com/wjwwood/serial-release.git
+- rosdistro version: `1.2.1-0`
+- old version: `1.2.1-0`
+- new version: `1.2.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.5.20`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.4`
+- rosdistro version: `0.4.2`
+- vcstools version: `0.1.38`
+
+
 ## serial (hydro) - 1.2.1-0
 
 The packages in the `serial` repository were released into the `hydro` distro by running `/usr/local/bin/bloom-release -r hydro -t hydro serial` on `Wed, 22 Apr 2015 05:22:07 -0000`
