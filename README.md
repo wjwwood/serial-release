@@ -1,3 +1,26 @@
+## serial (kinetic) - 1.2.1-1
+
+The packages in the `serial` repository were released into the `kinetic` distro by running `/usr/local/bin/bloom-release -r kinetic -t kinetic serial` on `Sun, 24 Apr 2016 21:05:21 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+
+- upstream repository: https://github.com/wjwwood/serial.git
+- release repository: https://github.com/wjwwood/serial-release.git
+- rosdistro version: `1.2.1-0`
+- old version: `1.2.1-0`
+- new version: `1.2.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.4`
+- rosdistro version: `0.4.4`
+- vcstools version: `0.1.38`
+
+
 ## serial (kinetic) - 1.2.1-0
 
 The packages in the `serial` repository were released into the `kinetic` distro by running `/usr/local/bin/bloom-release -r kinetic -t kinetic serial` on `Wed, 23 Mar 2016 22:33:43 -0000`
