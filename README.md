@@ -1,3 +1,26 @@
+## serial (indigo) - 1.2.1-1
+
+The packages in the `serial` repository were released into the `indigo` distro by running `/usr/local/bin/bloom-release -r indigo -t indigo serial` on `Thu, 07 Jul 2016 20:20:31 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+
+- upstream repository: https://github.com/wjwwood/serial.git
+- release repository: https://github.com/wjwwood/serial-release.git
+- rosdistro version: `1.2.1-0`
+- old version: `1.2.1-0`
+- new version: `1.2.1-1`
+
+Versions of tools used:
+
+- bloom version: `0.5.21`
+- catkin_pkg version: `0.2.10`
+- rosdep version: `0.11.5`
+- rosdistro version: `0.4.7`
+- vcstools version: `0.1.38`
+
+
 ## serial (kinetic) - 1.2.1-1
 
 The packages in the `serial` repository were released into the `kinetic` distro by running `/usr/local/bin/bloom-release -r kinetic -t kinetic serial` on `Sun, 24 Apr 2016 21:05:21 -0000`
