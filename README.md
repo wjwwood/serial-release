@@ -1,3 +1,26 @@
+## serial (melodic) - 1.2.1-0
+
+The packages in the `serial` repository were released into the `melodic` distro by running `/Users/william/.pyenv/versions/2.7.15/bin/bloom-release -r melodic -t melodic serial` on `Wed, 21 Nov 2018 02:38:25 -0000`
+
+The `serial` package was released.
+
+Version of package(s) in repository `serial`:
+
+- upstream repository: https://github.com/wjwwood/serial.git
+- release repository: unknown
+- rosdistro version: `null`
+- old version: `null`
+- new version: `1.2.1-0`
+
+Versions of tools used:
+
+- bloom version: `0.6.9`
+- catkin_pkg version: `0.4.9`
+- rosdep version: `0.13.0`
+- rosdistro version: `0.7.0`
+- vcstools version: `0.1.40`
+
+
 ## serial (indigo) - 1.2.1-1
 
 The packages in the `serial` repository were released into the `indigo` distro by running `/usr/local/bin/bloom-release -r indigo -t indigo serial` on `Thu, 07 Jul 2016 20:20:31 -0000`
